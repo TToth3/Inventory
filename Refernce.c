@@ -4,6 +4,7 @@
 #include<math.h>
 #include<stdlib.h>
 
+//test
 
 struct Inventory{
     int ID;
