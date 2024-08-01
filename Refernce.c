@@ -4,6 +4,7 @@
 #include<math.h>
 #include<stdlib.h>
 
+
 struct Inventory{
     int ID;
     char Name[20];
