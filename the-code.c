@@ -1,4 +1,4 @@
-//Code goes here
+/* Baseline code*/
 #include<stdio.h>
 #include<string.h>
 #include<limits.h>
@@ -67,6 +67,15 @@ int ReadFile(){
     fclose(file_ptr);
 }
 
+/* Adrian's Code*/
+
+
+
+
+
+
+
+
 /* Tyler's Code*/
 
 int readInvetory(){
@@ -118,6 +127,8 @@ int readInvetory(){
 int updateInventory(){
     printf("\e[1;1H\e[2J");
     printf("");
+
+    /* Functions needed. Add item, Remove Item, Edit item.*/
 
 }
 
