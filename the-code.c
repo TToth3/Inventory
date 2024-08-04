@@ -5,6 +5,9 @@
 #include<math.h>
 #include<stdlib.h>
 
+#define FILE_NAME "Inventory.txt"
+#define TOTAL_SALES "Total_Sales.txt"
+
 struct Inventory{
     int ID;
     char Name[20];
@@ -22,6 +25,25 @@ Items* Pointer = NULL;
 Items* newItem = NULL;
 int count = 0;
 FILE* file_ptr;
+
+void printInventory(){
+    printf("\e[1;1H\e[2J");
+        Pointer = Head;
+        if(Pointer != NULL){
+            printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
+            printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+            while(Pointer->nextItem != NULL){
+                Pointer = Pointer->nextItem;
+                printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+            }
+        }
+
+        else{
+            printf("\nNo Inventory\n");
+        }
+}
+
+
 int ReadFile(){
 
     //Variables used to store lines of data from the file
@@ -49,6 +71,7 @@ int ReadFile(){
         else{
 
             newItem->nextItem = Head;
+            newItem->prevItem = NULL;
             Tail = newItem->nextItem;
             Tail->prevItem = newItem;
             Head = newItem;
@@ -67,7 +90,11 @@ int ReadFile(){
     fclose(file_ptr);
 }
 
-/* Adrian's Code*/
+/*///////////////////
+Adrian's Functions
+//////////////////*/
+
+
 
 typedef struct Item {
     char name[100];
@@ -133,7 +160,7 @@ int main() {
 
     return 0;
 }
-
+*/
 void add_Item(Items **head) {
     Items *newItem = (Items *)malloc(sizeof(Items));
     if (!newItem) {
@@ -331,17 +358,72 @@ void load_FromFile(Items **head) {
     }
 
     fclose(file);
+}
 
 
 
 
 
 
+/* Tyler's Functions*/
 
-/* Tyler's Code*/
 
-int readInvetory(){
+void purchaseItem();
+void totalCosts(double totalSales);
+    int ID;
+    int quantity;
+    double itemCost;
+    double totalSales = 0;
+    Items *Pointer = Head;
     
+    file_ptr = fopen("Total_Sales.txt")
+    
+    if(Pointer == NULL) {
+        printf("Out of Stock");
+    else 
+        printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
+        printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+    }
+
+    while(Pointer != NULL) {
+        Pointer = Pointer->nextItem;
+        printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+        Pointer = Pointer->nextItem;
+    }
+
+        printf("What would you like to purchase: ");
+        scanf("%d", &ID);
+        
+        Pointer = Head;
+        while(Pointer != NULL && Pointer->ID != ID) {
+            Pointer = Pointer->nextItem;
+        }
+        if (Pointer == NULL) {
+            printf("Item does not exist");
+
+        else
+            printf("How many do you want to purchase: ");
+            scanf("%d", quantity);
+        }
+        if (quantity > Pointer->Stock) {
+            printf("Not enough in stock");
+            else {
+                itemCost = Pointer->Cost * quantity
+                totalSales += itemCost;
+                Pointer->Stock -= quantity
+                
+        fprintf(file_ptr, "%d %.2f %s %d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+        }
+
+}
+// End of Purchase
+// Needs testing
+
+void readInvetory(){
+
+    /* Feel free to comment out this code and work on it */
+
+
     printf("\e[1;1H\e[2J");
     Pointer = Head;
     int choice = 1;
@@ -354,9 +436,12 @@ int readInvetory(){
         scanf("%d", &choice);
         char* str = fgets(buffer, sizeof(buffer), stdin);
 
+        //Input validation
         if(strlen(str) != 1){
             printf("\nYou did not enter a valid choice, Please try again.\n");
         }
+
+        //Scrolls Pointer up list
         else if(choice == 1){
             printf("\e[1;1H\e[2J");
             Pointer = Pointer->nextItem;
@@ -364,6 +449,8 @@ int readInvetory(){
             printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
             printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
         }
+
+        //Scrolls pointer down list
         else if(choice == 2){
             printf("\e[1;1H\e[2J");
             Pointer = Pointer->prevItem;
@@ -372,6 +459,8 @@ int readInvetory(){
             printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
 
         }
+
+        //Clears screen
         else if(choice == 0){
             printf("\e[1;1H\e[2J");
         }
@@ -385,14 +474,153 @@ int readInvetory(){
 
 }
 
-
-int updateInventory(){
-    printf("\e[1;1H\e[2J");
-    printf("");
-
-    /* Functions needed. Add item, Remove Item, Edit item.*/
-
+void editItem(){
+    
 }
+//End of editItem()
+
+// Function complete (until bug testing)
+void removeItem(){
+    int choice;
+    int check = 1;
+    Items* temp = NULL;
+
+    printf("\e[1;1H\e[2J");
+    printInventory();
+
+    printf("\nPlease enter the ID of the item you'd like to Remove: ");
+    scanf("%d", &choice);
+
+    char* str = fgets(buffer, sizeof(buffer), stdin);
+
+    if(strlen(str) != 1){
+        printf("\nYou did not enter a Valid ID, Please try again\n");
+    }
+
+    else{
+        Pointer = Head;
+        while(Pointer->ID != choice && Pointer->nextItem != NULL){
+            Pointer = Pointer->nextItem;
+        }
+        
+        if(Pointer->ID == choice){
+            if(Pointer->prevItem == NULL){
+                temp = Pointer->nextItem;
+                Head = temp;
+                temp->prevItem = NULL;
+            }
+            else if(Pointer->nextItem == NULL){
+                temp = Pointer->prevItem;
+                temp->nextItem = NULL;
+            }
+            
+            else{
+            temp = Pointer->prevItem;
+            temp->nextItem = Pointer->nextItem;
+            temp = Pointer->nextItem;
+            temp->prevItem = Pointer->prevItem;
+            }
+        }
+        else{
+            printf("\nItem Not found\n");
+        }
+    }
+}
+//End of removeItem()
+
+// Function complete (until bug testing)
+// May add item duplicate check 
+void addInvetory(){
+    printf("\e[1;1H\e[2J");
+    int choice = 1;
+    file_ptr = fopen("Inventory.txt", "a");
+    
+    while(choice != 0){
+        printf("\nEnter '0' to stop adding Items\nOr enter any other number to continue: ");
+        scanf("%d", &choice);
+        char* str = fgets(buffer, sizeof(buffer), stdin);
+        
+        if(strlen(str) != 1){
+            choice = 1;
+        }
+
+        if(choice != 0){
+            count++;
+            newItem = malloc(sizeof(Items));
+            if(count == 1){
+                Head = newItem;
+                newItem->nextItem = NULL;
+            }
+
+            else{
+            newItem->nextItem = Head;
+            newItem->prevItem = NULL;
+            Tail = newItem->nextItem;
+            Tail->prevItem = newItem;
+            Head = newItem;
+            }
+            
+            printf("\nPlease Enter Item %d's Name, Cost and how many we have: ", count);
+            scanf("%s%f%d", newItem->Name, &newItem->Cost, &newItem->Stock);
+            
+            //Adds ID values
+            newItem->ID = count;
+
+            char* str = fgets(buffer, sizeof(buffer), stdin);
+
+            //Adds new items to the file
+            fprintf(file_ptr, "%d %.2f %s %d\n", count, newItem->Cost, newItem->Name, newItem->Stock);
+            
+            //Input validation
+            if(strlen(str) != 1){
+                printf("\nYou did not enter a valid balance and/or stock for %s, We will set the incorrect value(s) to 0\nPlease edit these values later\n", newItem->Name);
+                //Not perfect since both will fail if the Cost does, but it can catch errors on stock and leave cost unaffected.
+                if(isdigit(newItem->Cost) == 0){
+                    newItem->Cost = 0;
+                }
+                if(isdigit(newItem->Stock) == 0){
+                    newItem->Stock = 0;
+                }
+                
+            }
+        }
+    }
+    fclose(file_ptr);
+}
+//End of AddInventory()
+
+
+void updateInventory(){
+
+    int choice = 0;
+    printf("\e[1;1H\e[2J");
+    while(choice != 4){
+        printf("What would you like to do?\n\n1. Add Item\n2. Remove Item\n3. Edit Item\n4. Back\nChoice: ");
+        scanf("%d", &choice);
+        char* str = fgets(buffer, sizeof(buffer), stdin);
+        if(strlen(str) != 1){
+            printf("\nYou did not enter a valid choice, Please try again.\n");
+        }
+        else if(choice == 1){
+            addInvetory();
+        }
+        else if(choice == 2){
+            removeItem();
+        }
+        else if(choice == 3){
+            //WIP
+        }
+        else if(choice == 4){
+            printf("\e[1;1H\e[2J");
+        }
+    }
+}
+//End of updateInventory()
+
+
+/*///////////////// 
+    MAIN BODY 
+/////////////////*/
 
 int main(){
     
@@ -416,10 +644,13 @@ int main(){
             updateInventory();
         }
         else if(choice == 2){
-            //WIP
+            purchaseItem();
+            
         }
         else if(choice == 3){
             readInvetory();
+
+            /*Still needs proper record printing*/
         }
         else if(choice == 4){
             printf("Thanks for using the program!");

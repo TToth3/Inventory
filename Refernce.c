@@ -169,6 +169,9 @@ int purchaseItem(){
 
     int choice;
     int check;
+    int buy;
+    int temp;
+    float cost;
 
     printf("\e[1;1H\e[2J");
     Pointer = Head;
@@ -178,6 +181,14 @@ int purchaseItem(){
         while(Pointer->nextItem != NULL){
             Pointer = Pointer->nextItem;
             printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+        printf("\nEnter the item you would like to purchase: " );
+        scanf("%d", &quantity);
+        while (getchar() = != "\n"); 
+
+        if (quantity <= items->quantity) {\items->quantity -= quantity;
+        printf("Amount Purchased
+        ")}
+        
         }
     }
     else{
@@ -187,22 +198,55 @@ int purchaseItem(){
     printf("\nPlease enter the ID of the item you'd like to purchase: ");
     scanf("%d", &choice);
 
-    Pointer = Head;
-    while(Pointer->ID != choice){
-        Pointer = Pointer->nextItem;
-        if(Pointer->nextItem == NULL){
-            check = 1;
-        }
+    char* str = fgets(buffer, sizeof(buffer), stdin);
+
+    if(strlen(str) != 1){
+        printf("\nYou did not enter a Valid ID, Please try again\n");
     }
 
-    if(Pointer->ID == choice){
-        printf("\nID:\tCost:\tName:\tStock:\n----------------------------\n");
-        printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
-        printf("\nHow Mant would you like to buy: ");
-
-    }
     else{
-        printf("\nwas not found. Either its not it the list or the spelling didnt match.\nPlease Try Again.\n");
+        Pointer = Head;
+        while(Pointer->ID != choice){
+            Pointer = Pointer->nextItem;
+            if(Pointer->nextItem == NULL){
+                check = 1;
+            }
+        }
+
+        if(Pointer->ID == choice){
+            if(Pointer->Stock > 0){
+                printf("\nID:\tCost:\tName:\tStock:\n----------------------------\n");
+                printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+                printf("\nHow Many would you like to buy: ");
+                scanf("%d", &buy);
+
+                 char* str = fgets(buffer, sizeof(buffer), stdin);
+
+                if(strlen(str) != 1){
+                    printf("\nYou did not enter a Valid Number, Please try again\n");
+                }
+
+                else if(Pointer->Stock - buy < 0){
+                    temp = buy - Pointer->Stock;
+                    buy = buy - temp;
+                    cost = Pointer->Cost * buy;
+                    Pointer->Stock = Pointer->Stock - buy;
+                    printf("\nWe could not completely fill your order, You were able to buy %d %s's before we ran out.\n Total Price: $%.2f\n", buy, Pointer->Name, cost);
+
+                }
+                else{
+                    cost = Pointer->Cost * buy;
+                    Pointer->Stock = Pointer->Stock - buy;
+                    printf("You have bought %d %s's\nTotal Price: $%.2f\n", buy, Pointer->Name, cost);
+                }
+            }
+            else{
+                printf("\nThat Item is Out of stock\n");
+            }
+        }
+        else{
+            printf("\nItem not found. Either its not it the list or the ID didnt match.\nPlease Try Again.\n");
+        }
     }
 }
 
