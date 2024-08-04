@@ -51,6 +51,7 @@ int ReadFile(){
     char b[99];
     float c;
     int d;
+    Items* temp;
 
     //Opens the file in read mode
     file_ptr = fopen("Inventory.txt", "r");
@@ -65,6 +66,7 @@ int ReadFile(){
         //Creates initial and new nodes
         newItem = malloc(sizeof(Items));
         if(count == 1){
+            Tail = newItem;
             Head = newItem;
             newItem->nextItem = NULL;
         }
@@ -72,8 +74,8 @@ int ReadFile(){
 
             newItem->nextItem = Head;
             newItem->prevItem = NULL;
-            Tail = newItem->nextItem;
-            Tail->prevItem = newItem;
+            temp = newItem->nextItem;
+            temp->prevItem = newItem;
             Head = newItem;
         }
 
@@ -88,12 +90,15 @@ int ReadFile(){
     }
     //Closes file
     fclose(file_ptr);
+    file_ptr = fopen("Total_Sales.txt","r");
+    fscanf(file_ptr,"%f", &totalSales);
+    fclose(file_ptr);
 }
 
 /*///////////////////
 Adrian's Functions
 //////////////////*/
-
+/*
 
 
 typedef struct Item {
@@ -160,7 +165,7 @@ int main() {
 
     return 0;
 }
-*/
+
 void add_Item(Items **head) {
     Items *newItem = (Items *)malloc(sizeof(Items));
     if (!newItem) {
@@ -361,15 +366,15 @@ void load_FromFile(Items **head) {
 }
 
 
-
+*/
 
 
 
 /* Tyler's Functions*/
 
 
-void purchaseItem();
-void totalCosts(double totalSales);
+
+void purchaseItem(double totalSales);
     int ID;
     int quantity;
     double itemCost;
@@ -474,8 +479,122 @@ void readInvetory(){
 
 }
 
+int searchName(char search[99]){
+    int check = 0;
+    Pointer = Head;
+    while((check == 0) && (strcmp(search,Pointer->Name) != 0)){
+        Pointer = Pointer->nextItem;
+        if(Pointer->nextItem == NULL){
+            check = 1;
+        }
+    }
+    if(strcmp(search,Pointer->Name) == 0){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
+
 void editItem(){
-    
+    int choice;
+    int edit;
+    char name[99];
+    int stock;
+    float price;
+    int test;
+    int loop = 1;
+    int loop2 = 1;
+    Items* temp = NULL;
+
+    printf("\e[1;1H\e[2J");
+    printInventory();
+
+    printf("\nPlease enter the ID of the item you'd like to Edit: ");
+    scanf("%d", &choice);
+
+    char* str = fgets(buffer, sizeof(buffer), stdin);
+
+    if(strlen(str) != 1){
+        printf("\nYou did not enter a Valid ID, Please try again\n");
+    }
+
+    else{
+        Pointer = Head;
+        while(Pointer->ID != choice && Pointer->nextItem != NULL){
+            Pointer = Pointer->nextItem;
+        }
+        
+        if(Pointer->ID == choice){
+            while(loop2 == 1){
+                //printf("\e[1;1H\e[2J");
+                printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
+                printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+                printf("\nWhat would you like to edit?\n\n1. Name\n2. Price\n3. Stock\n4. Exit\nChoice: ");
+                scanf("%d", &edit);
+
+                char* str = fgets(buffer, sizeof(buffer), stdin);
+
+                if(strlen(str) != 1){
+                    printf("\nYou did not enter a Valid ID, Please try again\n");
+                }
+
+                else if(edit == 1){
+                    while(loop == 1){
+                        printf("\nPlease enter the new name: ");
+                        scanf("%s", name);
+                        test = searchName(name);
+                        if(test == 0){
+                            strcpy(Pointer->Name, name);
+                            loop = 0;
+                        }
+                        else{
+                            printf("\nThere is already and item with that name\n");
+                        }
+                    }
+
+                }
+                else if(edit == 2){
+                    while(loop == 1){
+                        printf("\nPlease enter the new Price: ");
+                        scanf("%f", &price);
+                        char* str = fgets(buffer, sizeof(buffer), stdin);
+
+                        if(strlen(str) != 1){
+                            printf("\nYou did not enter a Valid ID, Please try again\n");
+                        }
+                        else{
+                            Pointer->Cost = price;
+                            loop = 0;
+                        }
+                    }
+                }
+                else if(edit == 3){
+                    while(loop == 1){
+                        printf("\nPlease enter the new Stock: ");
+                        scanf("%d", &stock);
+                        char* str = fgets(buffer, sizeof(buffer), stdin);
+
+                        if(strlen(str) != 1){
+                            printf("\nYou did not enter a Valid ID, Please try again\n");
+                        }
+                        else{
+                            Pointer->Stock = stock;
+                            loop = 0;
+                        }
+                    }
+                    
+                }
+                else if(edit == 4){
+                    loop2 = 0;
+                }
+                else{
+                    printf("\nSomething went wrong\n");
+                }
+            }
+        }
+    }
 }
 //End of editItem()
 
@@ -608,7 +727,7 @@ void updateInventory(){
             removeItem();
         }
         else if(choice == 3){
-            //WIP
+            editItem();
         }
         else if(choice == 4){
             printf("\e[1;1H\e[2J");
@@ -625,6 +744,8 @@ void updateInventory(){
 int main(){
     
     file_ptr = fopen("Inventory.txt", "a");
+    fclose(file_ptr);
+    file_ptr = fopen("Total_Sales.txt", "a");
     fclose(file_ptr);
     ReadFile();
 
@@ -653,6 +774,17 @@ int main(){
             /*Still needs proper record printing*/
         }
         else if(choice == 4){
+            //Saves the running data to the file so edits stick
+            file_ptr = fopen("Inventory.txt", "w");
+            Pointer = Tail;
+            count = 1;
+            fprintf(file_ptr, "%d %.2f %s %d\n", count, Pointer->Cost, Pointer->Name, Pointer->Stock);
+            while(Pointer->prevItem != NULL){
+                count++;
+                Pointer = Pointer->prevItem;
+                fprintf(file_ptr, "%d %.2f %s %d\n", count, Pointer->Cost, Pointer->Name, Pointer->Stock);
+            }
+            fclose(file_ptr);
             printf("Thanks for using the program!");
             sleep(2);
         }
