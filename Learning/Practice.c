@@ -117,6 +117,8 @@ Use this file to practice refining your code in a semi-production state and work
 Copy this onto your computer so that you can see the errors and run the code, some bugs dont show up visually.
 If you need to add more inventory to continue testing, it will need to be done manually, as I have the update system disabled in here.
 Everything else you would need to test and refine the code should already be in this file, if you think its missing something feel free to grab it.
+There are roughly 10-13 Errors, 2-4 inefficiencies and 1 un-needed variable. All the other functions in this program can be used as tools to fix some of these
+After that its refining the code to look or feel however you want.
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 */
