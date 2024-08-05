@@ -13,9 +13,11 @@ struct Inventory{
     char Name[20];
     float Cost;
     int Stock;
+    
     struct Inventory* nextItem;
     struct Inventory* prevItem;};
 typedef struct Inventory Items;
+
 
 //Global variables
 char buffer[1024];
@@ -25,6 +27,7 @@ Items* Pointer = NULL;
 Items* newItem = NULL;
 int count = 0;
 FILE* file_ptr;
+float totalSales = 0;
 
 void printInventory(){
     printf("\e[1;1H\e[2J");
@@ -373,31 +376,37 @@ void load_FromFile(Items **head) {
 /* Tyler's Functions*/
 
 
-
-void purchaseItem(double totalSales);
+void purchaseItem() 
+{
     int ID;
+    int Name;
     int quantity;
-    double itemCost;
-    double totalSales = 0;
-    Items *Pointer = Head;
+    float itemCost;
+    float totalSales = 0;
+    Items* Pointer = Head;
     
-    file_ptr = fopen("Total_Sales.txt")
+    file_ptr = fopen("Total_Sales.txt", "a");
     
     if(Pointer == NULL) {
-        printf("Out of Stock");
-    else 
+        printf("Error opening requested file");
+        return;
+    }
+    
+    if(Pointer == NULL)
+    {
         printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
         printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+        return;
     }
 
-    while(Pointer != NULL) {
+    if(Pointer != NULL) {
         Pointer = Pointer->nextItem;
         printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
         Pointer = Pointer->nextItem;
     }
 
         printf("What would you like to purchase: ");
-        scanf("%d", &ID);
+        scanf("%d", &Name);
         
         Pointer = Head;
         while(Pointer != NULL && Pointer->ID != ID) {
@@ -405,24 +414,23 @@ void purchaseItem(double totalSales);
         }
         if (Pointer == NULL) {
             printf("Item does not exist");
-
-        else
+        }
+        else {
             printf("How many do you want to purchase: ");
-            scanf("%d", quantity);
+            scanf("%d", &quantity);
         }
         if (quantity > Pointer->Stock) {
-            printf("Not enough in stock");
+            printf("Not enough in stock"); }
             else {
-                itemCost = Pointer->Cost * quantity
+                itemCost = Pointer->Cost * quantity;
                 totalSales += itemCost;
-                Pointer->Stock -= quantity
+                Pointer->Stock -= quantity;
                 
         fprintf(file_ptr, "%d %.2f %s %d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
-        }
-
+        }   
 }
+
 // End of Purchase
-// Needs testing
 
 void readInvetory(){
 
@@ -765,8 +773,13 @@ int main(){
             updateInventory();
         }
         else if(choice == 2){
+<<<<<<< HEAD
+            printf("What item would you like to purchase: ")
+            scanf("")
+=======
             purchaseItem();
             
+>>>>>>> 05090b3dba2082f244666cbf1e2535fed15beb7e
         }
         else if(choice == 3){
             readInvetory();
