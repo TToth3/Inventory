@@ -24,23 +24,22 @@ Items* Pointer = NULL;
 Items* newItem = NULL;
 int count = 0;
 FILE* file_ptr;
-float totalSales = 0;
+float totalSales;
+float totalUnsold;
 
 void printInventory(){
-    printf("\e[1;1H\e[2J");
-        Pointer = Head;
-        if(Pointer != NULL){
-            printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
+    Pointer = Head;
+    if(Pointer != NULL){
+        printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
+        printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
+        while(Pointer->nextItem != NULL){
+            Pointer = Pointer->nextItem;
             printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
-            while(Pointer->nextItem != NULL){
-                Pointer = Pointer->nextItem;
-                printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
-            }
         }
-
-        else{
-            printf("\nNo Inventory\n");
-        }
+    }
+    else{
+        printf("\nNo Inventory\n");
+    }
 }
 
 int searchName(char search[99]){
@@ -111,14 +110,13 @@ int ReadFile(){
     fclose(file_ptr);
 }
 
-
-
 void purchaseItem() {
     char Name[99];
     int quantity;
     int check;
     float itemCost;
     Pointer = Head;
+    int buyLoop = 1;
     
     file_ptr = fopen("Total_Sales.txt", "w");
     
@@ -128,30 +126,39 @@ void purchaseItem() {
     }
 
     else{
-        printInventory();
-        printf("\nWhat would you like to purchase: ");
-        scanf("%s", &Name);
-        check = searchName(Name);
-        if(check == 1){
-            printf("How many do you want to purchase: ");
-            scanf("%d", &quantity);
-            if (quantity > Pointer->Stock) {
-                printf("Not enough in stock");
+        buyLoop = 1;
+        printf("\e[1;1H\e[2J");
+        while((strcmp(Name,"Exit") != 0) && (strcmp(Name,"exit") != 0)){
+            printInventory();
+            printf("\nPlease enter the name of what would you like to purchase\nOr Enter 'Exit' to leave\n: ");
+            scanf("%s", &Name);
+            if((strcmp(Name,"Exit") != 0) || (strcmp(Name,"exit") != 0)){
+                printf("\e[1;1H\e[2J");
             }
-            else {
-                itemCost = Pointer->Cost * quantity;
-                totalSales += itemCost;
-                Pointer->Stock -= quantity;
-                fprintf(file_ptr, "%.2f", totalSales);
+            else{
+                check = searchName(Name);
+                if(check == 1){
+                    printf("\nHow many do you want to purchase: ");
+                    scanf("%d", &quantity);
+                    if (quantity > Pointer->Stock) {
+                        printf("\nNot enough in stock\n");
+                    }
+                    else {
+                        itemCost = Pointer->Cost * quantity;
+                        totalSales += itemCost;
+                        Pointer->Stock -= quantity;
+                        fprintf(file_ptr, "%.2f", totalSales);
+                    }
+                }
+                else{
+                    printf("Item Not Found");
+                }
             }
-        }
-        else{
-            printf("Item Not Found");
         }
     }
 }   
 
-// End of Purchase
+// End of purchaseItem()
 
 
 void readInvetory(){
@@ -203,10 +210,7 @@ void readInvetory(){
         else{
             printf("\nNo Records Found\n");
         }
-
     }
-    
-
 }
 
 
@@ -241,7 +245,7 @@ void editItem(){
         
         if(Pointer->ID == choice){
             while(loop2 == 1){
-                //printf("\e[1;1H\e[2J");
+                printf("\e[1;1H\e[2J");
                 printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
                 printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
                 printf("\nWhat would you like to edit?\n\n1. Name\n2. Price\n3. Stock\n4. Exit\nChoice: ");
@@ -478,13 +482,7 @@ int main(){
             updateInventory();
         }
         else if(choice == 2){
-<<<<<<< HEAD
-            printf("What item would you like to purchase: ")
-            scanf("")
-=======
             purchaseItem();
-            
->>>>>>> 05090b3dba2082f244666cbf1e2535fed15beb7e
         }
         else if(choice == 3){
             readInvetory();
