@@ -3,6 +3,8 @@
 #include<limits.h>
 #include<math.h>
 #include<stdlib.h>
+#include<ctype.h>
+#include<unistd.h>
 
 //Node Structure
 struct Inventory{
@@ -174,6 +176,8 @@ int readFile(){
     fscanf(file_ptr,"%f", &totalSales);
     //Closes total sales file
     fclose(file_ptr);
+    return 0;
+
 }
 //End of readFile()
 
