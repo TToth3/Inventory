@@ -251,6 +251,7 @@ void purchaseItem() {
                         totalSales += itemCost;
                         //reduces stock by order amount
                         Pointer->Stock -= quantity;
+                        printf("\e[1;1H\e[2J");
                     }
                 }
 
@@ -294,6 +295,7 @@ void findItem(){
         //if item is found
         if(check == 1){
             //print item inventory info
+            printf("\e[1;1H\e[2J");
             printf("ID:\tCost:\tName:\tStock:\n----------------------------\n");
             printf("%d\t$%.2f\t%s\t%d\n", Pointer->ID, Pointer->Cost, Pointer->Name, Pointer->Stock);
         }
@@ -358,19 +360,23 @@ void reportInvetory(){
         //Input validation
         char* str = fgets(buffer, sizeof(buffer), stdin);
         if(strlen(str) != 1){
-            printf("\nYou did not enter a Valid ID, Please try again\n");
+            printf("\e[1;1H\e[2J");
+            printf("\nYou did not enter a Valid option, Please try again\n");
         }
 
         //Checks input for menu selection
         else if(choice == 1){
+            printf("\e[1;1H\e[2J");
             printInventory();
         }
         //Checks input for menu selection
         else if(choice == 2){
+            printf("\e[1;1H\e[2J");
             findItem();
         }
         //Checks input for menu selection
         else if(choice == 3){
+            printf("\e[1;1H\e[2J");
             printSales();
         }
         //Checks input for menu selection
@@ -451,7 +457,7 @@ void editItem(){
                     //Input validation
                     char* str = fgets(buffer, sizeof(buffer), stdin);
                     if(strlen(str) != 1){
-                        printf("\nYou did not enter a Valid ID, Please try again\n");
+                        printf("\nYou did not enter a Valid option, Please try again\n");
                     }
                     
                     //Checks menu choice
@@ -494,7 +500,7 @@ void editItem(){
                             //Validates input
                             char* str = fgets(buffer, sizeof(buffer), stdin);
                             if(strlen(str) != 1){
-                                printf("\nYou did not enter a Valid ID, Please try again\n");
+                                printf("\nYou did not enter a Valid Price, Please try again\n");
                             }
 
                             //if input is good change price
@@ -516,7 +522,7 @@ void editItem(){
                             //Validates input
                             char* str = fgets(buffer, sizeof(buffer), stdin);
                             if(strlen(str) != 1){
-                                printf("\nYou did not enter a Valid ID, Please try again\n");
+                                printf("\nYou did not enter a Valid stock, Please try again\n");
                             }
 
                             //if input is good change stock
@@ -815,7 +821,7 @@ int main(){
             printf("Something has gone wrong, please try again.");
         }
     }
-
+    return 0;
 }
 
 //End of program
