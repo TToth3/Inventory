@@ -235,11 +235,13 @@ void purchaseItem() {
                     //Validates input
                     char* str = fgets(buffer, sizeof(buffer), stdin);
                     if(strlen(str) != 1){
+                        printf("\e[1;1H\e[2J");
                         printf("\nYou did not enter a Valid Amount, Please try again\n");
                     }
 
                     //check to see if order is more than the stock
                     else if (quantity > Pointer->Stock) {
+                        printf("\e[1;1H\e[2J");
                         printf("\nNot enough in stock\n");
                     }
 
@@ -257,6 +259,7 @@ void purchaseItem() {
 
                 //If item wasnt found
                 else{
+                    printf("\e[1;1H\e[2J");
                     printf("\nItem Not Found\n");
                 }
             }
@@ -537,6 +540,7 @@ void editItem(){
                     //Checks menu choice
                     else if(edit == 4){
                         loop2 = 0;
+                        printf("\e[1;1H\e[2J");
                     }
 
                     //Catchall for unexpected input
@@ -821,7 +825,7 @@ int main(){
             printf("Something has gone wrong, please try again.");
         }
     }
-    return 0;
+
 }
 
 //End of program
